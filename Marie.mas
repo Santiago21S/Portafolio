@@ -1,0 +1,106 @@
+﻿
+CÓDIGO:
+
+/ Pide la cantidad de horas trabajadas
+/ Guarda las horas en la variable HorasTrabajadas
+INPUT
+STORE HorasTrabajadas
+
+/ Pide el salario por hora
+/ Guarda el salario en la variable SalarioHora
+INPUT
+STORE SalarioHora
+
+/ La da el valor de cero a las variables
+LOAD Cero
+STORE HorasNormales      / Inicializa HorasNormales a 0
+STORE HorasExtra         / Inicializa HorasExtra a 0
+STORE Total              / Inicializa Total a 0
+
+/ Inicializa la variable temporal
+LOAD HorasTrabajadas    
+STORE TempHorasTrabajadas / Guarda las horas trabajadas en TempHorasTrabajadas
+
+/ Calcular horas normales y horas extra
+LOAD TempHorasTrabajadas    
+SUBT Cuarenta            / Resta 40 para calcular horas extra
+STORE HorasExtra         / Guarda el sobrante en HorasExtra
+
+SKIPCOND 800             / Si el resultado es 0, salta a NoHorasExtra
+JUMP NoHorasExtra
+
+/ Guardar horas extra 
+LOAD Cuarenta           
+STORE HorasNormales     / Guarda 40 en HorasNormales
+JUMP CalcularSalarioNormal / Salta a calcular el salario normal
+
+NoHorasExtra, 	LOAD TempHorasTrabajadas
+STORE HorasNormales     / Guarda todas las horas trabajadas en HorasNormales
+LOAD Cero
+STORE HorasExtra        / No hay horas extra, así que se inicializa a 0
+
+CalcularSalarioNormal,	LOAD HorasNormales      
+LOAD SalarioHora        
+STORE SalarioNormal     / Guarda el salario por hora en SalarioNormal
+LOAD Cero
+STORE TotalSalarioNormal / Inicializa TotalSalarioNormal a 0
+
+/ === SALARIO CON HORAS NORMALES ===
+CalcularSalarioNormalLoop,	LOAD HorasNormales      / Cargar cuántas horas quedan.
+SKIPCOND 800            / Si las horas son 0, salta al final.
+JUMP FinCalculoNormal    / Terminar si ya no hay horas.
+
+LOAD SalarioNormal       / Cargar el salario por hora.
+ADD TotalSalarioNormal    / Sumarlo al total acumulado.
+STORE TotalSalarioNormal  / Guardar el nuevo total.
+
+LOAD HorasNormales       / Cargar las horas restantes.
+SUBT Uno                 / Restar 1 hora.
+STORE HorasNormales      / Guardar las horas actualizadas.
+
+JUMP CalcularSalarioNormalLoop  / Repetir hasta que no queden horas.
+
+FinCalculoNormal,	LOAD HorasExtra  
+SKIPCOND 800            
+JUMP AgregarTotal        / Si no hay horas extra, salta a AgregarTotal
+
+/ Calcular salario extra
+LOAD SalarioHora         / Cargar SalarioHora
+ADD SalarioHora          / Salario Extra = SalarioHora + SalarioHora (esto es 2 * SalarioHora)
+STORE SalarioExtra       / SalarioExtra ahora tiene el valor correcto (2 * SalarioHora)
+
+/ === SALARIO CON HORAS EXTRA ===
+CalcularSalarioExtra,	LOAD HorasExtra    
+SKIPCOND 800
+JUMP AgregarTotal       / Si no hay horas extra, salta a AgregarTotal
+
+LOAD SalarioExtra
+ADD Total                / Sumar salario extra al total
+STORE Total
+
+LOAD HorasExtra
+SUBT Uno                / Restar 1 hora de HorasExtra
+STORE HorasExtra
+JUMP CalcularSalarioExtra / Repetir hasta que no queden horas extra
+
+AgregarTotal,	LOAD TotalSalarioNormal 
+ADD Total                / Sumar TotalSalarioNormal al Total
+STORE Total
+
+Fin,	LOAD Total               / Cargar el total final
+OUTPUT                   / Mostrar el total
+HALT                     / Terminar el programa
+
+/ Declaración de variables
+SalarioHora, DEC 0    
+HorasTrabajadas, DEC 0
+HorasNormales, DEC 0  
+HorasExtra, DEC 0     
+Total, DEC 0
+TempHorasTrabajadas, DEC 0
+TotalSalarioNormal, DEC 0
+SalarioNormal, DEC 0
+SalarioExtra, DEC 0
+Cero, DEC 0
+Uno, DEC 1            
+Cuarenta, DEC 40
